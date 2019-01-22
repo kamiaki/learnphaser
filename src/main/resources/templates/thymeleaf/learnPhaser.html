@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>learnPhaser</title>
+    <script src="phaser/phaser.js"></script>
+    <script src="js/boot.js"></script>
+    <script src="js/loader.js"></script>
 </head>
 <body>
     <h1>LearnPhaser</h1>
+    <div id="div_phaser"></div>
+
+    <script>
+        var game = new Phaser.Game(800,600,Phaser.CANVAS,'div_phaser');
+        var progressText;
+
+        game.state.add('boot',bootState);
+        game.state.add('loader',loaderState);
+        game.state.start('boot');
+    </script>
 </body>
 </html>
