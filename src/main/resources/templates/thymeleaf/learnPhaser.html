@@ -11,15 +11,49 @@
 </head>
 <body>
     <h1>LearnPhaser</h1>
-    <div id="div_phaser"></div>
+    <div id="div_phaser" style="width: 600px;height: 1000px;border: 1px solid red"></div>
 
     <script>
-        var game = new Phaser.Game(800,600,Phaser.CANVAS,'div_phaser');
-        var progressText;
+        var game = new Phaser.Game(400,400,Phaser.CANVAS,'div_phaser');
 
-        game.state.add('boot',bootState);
-        game.state.add('loader',loaderState);
-        game.state.start('boot');
+        var cat;
+
+        function state() {
+            this.init = function(){
+                game.scale.pageAlignHorizontally = true;    //水平居中
+                game.scale.pageAlignVertically = true;      //垂直居中
+
+                game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;   //自定义
+                game.scale.setUserScale(0.1,0.1);                       //设置自定义缩放比例
+            },
+            this.preload = function(){
+                game.load.image('backgroud','res/backgroud.png');
+                game.load.image('cat','res/cat.jpg');
+            },
+            this.create = function(){
+                game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
+                game.add.image(0,0,'backgroud');
+                cat = game.add.image(900,900,'cat');
+
+                game.input.onDown.add(function () {
+                    game.camera.follow(cat);
+                });
+
+            },
+            this.update = function(){
+                var keys = game.input.keyboard.createCursorKeys();
+                if(keys.right.isDown) game.camera.x += 10;
+                else if(keys.left.isDown) game.camera.x -= 10;
+                else if(keys.down.isDown) game.camera.y += 10;
+                else if(keys.up.isDown) game.camera.y -= 10;
+                cat.x += 1;
+            }
+        }
+
+        game.state.add('state1',state);
+        game.state.start('state1');
+
+
     </script>
 </body>
 </html>
