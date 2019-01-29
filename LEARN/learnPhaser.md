@@ -64,10 +64,6 @@ game.load.onFileComplete.add(function () {
 //所有资源加载完成事件
 game.load.onLoadComplete.add(function () {
 })
-
- //加载图片
-game.load.image('loading','res/preload.png');
-
 ```
 
 ### 舞台场景摄像机
@@ -101,10 +97,48 @@ game.scale.setUserScale(0.1,0.1);                       //设置自定义缩放�
 
 ------
 
-## 添加精灵
+## 显示对象
+
+### 加载舞台对象
 
 ```javascript
-game.add.image(0,0,'backgroud');	//加载一张图片
+game.load.image('loading','res/preload.png');			//加载图片
+game.load.spritesheet('sprite', 'res/a1.png', 32, 32);	//加载精灵图
+```
+
+### 添加舞台对象
+
+```javascript
+var image = game.add.image(0,0,'backgroud');	//添加一张图片
+var image = game.add.image(10,10,'sprite' , 0);	//添加精灵图的第一帧
+
+game.add.button(100,250,'sprite',function () {
+    console.info('点了按钮');
+}, game, 0,3,6,9);							//添加了一个按钮
+```
+
+### 添加画板
+
+```javascript
+var graphics = game.add.graphics(100,100);  //图形对象画板
+
+graphics.beginFill(0xff0000);   			//图形填充 2透明度
+graphics.endFill();							//填充结束
+graphics.lineStyle(5,0x0000ff);   			//描边
+graphics.clear();  						 //清除，并重置填充和描边
+
+graphics.drawRect(0,0,100,100);            //矩形
+graphics.drawCircle(180,100,100);          //圆
+graphics.drawEllipse(150,220,100,50);       //椭圆
+graphics.drawPolygon(50,380,200,380,250,430,180,480,20,450); //多边形
+graphics.arc(100,300,50,0,Math.PI);                 		//弧形
+graphics.drawRoundedRect(500,100,40,40,30);     //圆角矩形
+
+graphics.moveTo(800,0);              	//直线起点
+graphics.lineTo(400,600);              //直线重点
+
+graphics.moveTo(300,500);              				//曲线起点
+graphics.bezierCurveTo(700,600,600,500,300,200);    //曲线：控制点1，控制点2，重点
 ```
 
 

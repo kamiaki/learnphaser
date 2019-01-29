@@ -11,10 +11,10 @@
 </head>
 <body>
     <h1>LearnPhaser</h1>
-    <div id="div_phaser" style="width: 600px;height: 1000px;border: 1px solid red"></div>
+    <div id="div_phaser" style="width: 1000px;height: 1000px;border: 1px solid red"></div>
 
     <script>
-        var game = new Phaser.Game(400,400,Phaser.CANVAS,'div_phaser');
+        var game = new Phaser.Game(800,800,Phaser.CANVAS,'div_phaser');
 
         var cat;
 
@@ -23,21 +23,23 @@
                 game.scale.pageAlignHorizontally = true;    //水平居中
                 game.scale.pageAlignVertically = true;      //垂直居中
 
-                game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;   //自定义
-                game.scale.setUserScale(0.1,0.1);                       //设置自定义缩放比例
             },
             this.preload = function(){
                 game.load.image('backgroud','res/backgroud.png');
                 game.load.image('cat','res/cat.jpg');
+
+                game.load.spritesheet('sprite', 'res/a1.png', 32, 32);
             },
             this.create = function(){
                 game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
                 game.add.image(0,0,'backgroud');
-                cat = game.add.image(900,900,'cat');
 
-                game.input.onDown.add(function () {
-                    game.camera.follow(cat);
-                });
+                game.add.image(10,10,'sprite' , 0);
+                game.add.image(40,10,'sprite' , 1);
+
+                game.add.button(100,250,'sprite',function () {
+                    console.info('点了按钮');
+                }, game, 0,3,6,9);
 
             },
             this.update = function(){
@@ -46,7 +48,6 @@
                 else if(keys.left.isDown) game.camera.x -= 10;
                 else if(keys.down.isDown) game.camera.y += 10;
                 else if(keys.up.isDown) game.camera.y -= 10;
-                cat.x += 1;
             }
         }
 
