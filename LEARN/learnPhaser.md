@@ -104,20 +104,18 @@ game.scale.setUserScale(0.1,0.1);                       //设置自定义缩放�
 ```javascript
 game.load.image('loading','res/preload.png');			//加载图片
 game.load.spritesheet('sprite', 'res/a1.png', 32, 32);	//加载精灵图
+game.load.bitmapFont('font','res/font.png','res/font.fnt');	//加载文字图片
 ```
 
-### 添加舞台对象
+### 图片对象
 
 ```javascript
-var image = game.add.image(0,0,'backgroud');	//添加一张图片
-var image = game.add.image(10,10,'sprite' , 0);	//添加精灵图的第一帧
-
-game.add.button(100,250,'sprite',function () {
-    console.info('点了按钮');
-}, game, 0,3,6,9);							//添加了一个按钮
+//添加精灵图，和第一帧的精灵图
+var image = game.add.image(0,0,'backgroud');
+var image = game.add.image(10,10,'sprite' , 0);	
 ```
 
-### 添加画板
+### 画板对象
 
 ```javascript
 var graphics = game.add.graphics(100,100);  //图形对象画板
@@ -140,6 +138,110 @@ graphics.lineTo(400,600);              //直线重点
 graphics.moveTo(300,500);              				//曲线起点
 graphics.bezierCurveTo(700,600,600,500,300,200);    //曲线：控制点1，控制点2，重点
 ```
+
+### 按钮对象
+
+```javascript
+//添加了一个按钮
+game.add.button(100,250,'sprite',function () {
+    console.info('点了按钮');
+}, game, 0,3,6,9);		
+```
+
+### 精灵对象
+
+```javascript
+var sprite = game.add.sprite(100,100,'cat');	//添加一个精灵
+//改变xy坐标的3种方法
+sprite.x = 150;
+sprite.y = 150;
+sprite.position.x = 200;
+sprite.position.y = 200;
+sprite.position.set(300, 300);
+//设置锚点的2种方法
+sprite.anchor.x = 0.5;
+sprite.anchor.y = 0.5;
+sprite.anchor.set(0.5, 0.5);
+//设置精灵的宽高
+sprite.width = 50;
+sprite.height = 150;
+
+sprite.alpha = 0.5;		//设置透明度
+sprite.angle = 90;		//旋转角度
+sprite.scale.x = 2;		//x缩放
+sprite.scale.y = 2;		//y缩放
+sprite.visible = true;	//是否可见
+sprite.exists = true;	//不可见不处理,提高性能
+sprite.tint = 0x0000ff;	//染色
+```
+
+### 遮罩对象
+
+```javascript
+//遮罩
+var bg = game.add.image(0,0,'backgroud');
+var graphics = game.add.graphics(0,0);
+graphics.beginFill(0x123456);
+var circle = graphics.drawCircle(150,250,200);
+bg.mask = circle;
+```
+
+### 瓦片精灵
+
+```javascript
+//瓦片精灵
+var tilesprite = game.add.tileSprite(100,100,400,400,'cat');
+tilesprite.autoScroll(-20,0);	//滚动
+```
+
+### 文字对象
+
+```javascript
+//添加文字
+var text = game.add.text(60,60,'你好世界',{fill : '#fff'});
+text.font = '宋体';						//设置样式方法1 字体
+text.fontsize = 60;						//字号
+text.fontWeight = 'normal';				//粗细
+text.style.backgroundColor = '#0f0';	//设置样式方法2 背景色
+text.stroke = '#f00';					//描边
+text.strokeThickness = 10;				//描边粗细
+text.wordWrap = true;					//自动换行 英文
+text.wordWrapWidth = 150;				//自动换行
+
+//添加外部字体 先引入
+<style>
+    @font-face {
+        font-family: 'fzhyt';
+        src: url("res/活一体字体.TTF");
+    }
+</style>
+<h1 style="font-family: fzhyt">LearnPhaser</h1>	//激活字体 最好隐藏
+text.font = 'fzhyt';						//添加外部字体
+```
+
+#### 在线字体工具
+
+```javascript
+http://kvazars.com/littera/
+game.load.bitmapFont('font','res/font.png','res/font.fnt');		//加载资源
+var text = game.add.bitmapText(10,10,'font','测字',130);		//添加资源
+```
+
+### 分组对象
+
+```javascript
+var group = game.add.group();		//创建分组
+cat = game.add.image(400,400,'cat','',group);	//创建精灵时候就添加进分组
+group.add(cat);								//分组中添加精灵
+group.create(20,20,'cat');					//创建精灵同时添加进分组
+group.create(50,90,'cat');
+group.alpha = 0.5;						//设置组属性
+group.x = 100;
+```
+
+
+
+
 
 
 

@@ -8,16 +8,24 @@
     <script src="phaser/phaser.js"></script>
     <script src="js/boot.js"></script>
     <script src="js/loader.js"></script>
+
+    <style>
+        @font-face {
+            font-family: 'fzhyt';
+            src: url("res/活一体字体.TTF");
+        }
+    </style>
 </head>
 <body>
-    <h1>LearnPhaser</h1>
+    <h1 style="font-family: fzhyt">LearnPhaser</h1>
     <div id="div_phaser" style="width: 1000px;height: 1000px;border: 1px solid red"></div>
 
     <script>
         var game = new Phaser.Game(800,800,Phaser.CANVAS,'div_phaser');
 
         var cat;
-
+        var graphics;
+        
         function state() {
             this.init = function(){
                 game.scale.pageAlignHorizontally = true;    //水平居中
@@ -27,27 +35,31 @@
             this.preload = function(){
                 game.load.image('backgroud','res/backgroud.png');
                 game.load.image('cat','res/cat.jpg');
-
                 game.load.spritesheet('sprite', 'res/a1.png', 32, 32);
+
+                game.load.bitmapFont('font','res/font.png','res/font.fnt')
             },
             this.create = function(){
                 game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
-                game.add.image(0,0,'backgroud');
+                var bg = game.add.image(0,0,'backgroud');
 
-                game.add.image(10,10,'sprite' , 0);
-                game.add.image(40,10,'sprite' , 1);
+                var group = game.add.group();
+                cat = game.add.image(400,400,'cat','',group);
+                group.add(cat);
+                group.create(20,20,'cat');
+                group.create(50,90,'cat');
 
-                game.add.button(100,250,'sprite',function () {
-                    console.info('点了按钮');
-                }, game, 0,3,6,9);
+                group.alpha = 0.5;
+                group.x = 100;
 
             },
             this.update = function(){
                 var keys = game.input.keyboard.createCursorKeys();
-                if(keys.right.isDown) game.camera.x += 10;
-                else if(keys.left.isDown) game.camera.x -= 10;
-                else if(keys.down.isDown) game.camera.y += 10;
-                else if(keys.up.isDown) game.camera.y -= 10;
+                if(keys.right.isDown) graphics.x += 10;
+                else if(keys.left.isDown) graphics.x -= 10;
+                else if(keys.down.isDown) graphics.y += 10;
+                else if(keys.up.isDown) graphics.y -= 10;
+
             }
         }
 
