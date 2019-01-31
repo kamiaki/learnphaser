@@ -241,7 +241,47 @@ group.x = 100;
 
 
 
+## 动画
 
+### 补间动画
+
+```javascript
+//补间动画: 改变的属性 动画时间 动画模式 是否已开始就开始 延时 重复次数 反向
+tween.to({y:300}, 2000, Phaser.Easing.Bounce.Out,true,0,100,true);
+tween.start();//开始
+tween.stop();//停止
+tween.pause();//暂停
+tween.resume();//恢复
+```
+
+### 逐帧动画
+
+```javascript
+game.load.spritesheet('sprite', 'res/a1.png', 32, 32);		//加载精灵图
+var sprite = game.add.sprite(110,110,'sprite');				//添加精灵图
+sprite.animations.add('animation1',[0,1,2]);				//添加动画
+sprite.play('animation1',10,true);							//播放动画
+sprite.stop('animation1');									//停止动画
+```
+
+### Atlas动画
+
+```javascript
+//shoebox下载网址
+http://renderhjs.net/shoebox/
+game.load.atlasXML('man','res/r.png','res/r.xml');		//加载精灵图
+var man = game.add.sprite(10,10,'man');					//添加精灵图
+man.animations.add('animation1',[0,1]);					//添加动画
+man.animations.add('animation1',['r1.png','r2.png']);	 //添加动画
+man.play('animation1' , 30, true);						//播放动画
+man.stop('animation1');									//停止动画
+```
+
+### 粒子动画
+
+```javascript
+
+```
 
 
 

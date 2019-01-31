@@ -38,19 +38,17 @@
                 game.load.spritesheet('sprite', 'res/a1.png', 32, 32);
 
                 game.load.bitmapFont('font','res/font.png','res/font.fnt')
+
+                game.load.atlasXML('man','res/r.png','res/r.xml');
             },
             this.create = function(){
                 game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
                 var bg = game.add.image(0,0,'backgroud');
 
-                var group = game.add.group();
-                cat = game.add.image(400,400,'cat','',group);
-                group.add(cat);
-                group.create(20,20,'cat');
-                group.create(50,90,'cat');
-
-                group.alpha = 0.5;
-                group.x = 100;
+                var man = game.add.sprite(10,10,'man');
+                // man.animations.add('animation1',[0,1]);
+                man.animations.add('animation1',['r1.png','r2.png']);
+                man.play('animation1' , 10, true);
 
             },
             this.update = function(){
