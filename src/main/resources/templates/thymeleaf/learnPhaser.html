@@ -25,7 +25,8 @@
 
         var cat;
         var graphics;
-        
+
+        var emitter;
         function state() {
             this.init = function(){
                 game.scale.pageAlignHorizontally = true;    //水平居中
@@ -45,19 +46,21 @@
                 game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
                 var bg = game.add.image(0,0,'backgroud');
 
-                var man = game.add.sprite(10,10,'man');
-                // man.animations.add('animation1',[0,1]);
-                man.animations.add('animation1',['r1.png','r2.png']);
-                man.play('animation1' , 10, true);
-
+                //粒子发射器 x,y,最大粒子数
+                emitter = game.add.emitter(100, 100, 50);
+                emitter.makeParticles('cat', '',1000,true,true);//最后 粒子碰撞 粒子世界碰撞
+                emitter.gravity = 600;
+                emitter.bounce.y = 0.8;
+                emitter.flow(0,3000, 1, -1);//持续时间0不消失,间隔时间,每次发射多少,总共少-1无数
             },
             this.update = function(){
                 var keys = game.input.keyboard.createCursorKeys();
-                if(keys.right.isDown) graphics.x += 10;
-                else if(keys.left.isDown) graphics.x -= 10;
-                else if(keys.down.isDown) graphics.y += 10;
-                else if(keys.up.isDown) graphics.y -= 10;
+                if(keys.right.isDown) game.camera.x += 10;
+                else if(keys.left.isDown) game.camera.x -= 10;
+                else if(keys.down.isDown) game.camera.y += 10;
+                else if(keys.up.isDown) game.camera.y -= 10;
 
+                game.physics.arcade.collide(emitter);
             }
         }
 

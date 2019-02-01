@@ -280,6 +280,28 @@ man.stop('animation1');									//停止动画
 ### 粒子动画
 
 ```javascript
+//粒子发射器 x,y,最大粒子数
+var emitter = game.add.emitter(100, 100, 50);
+emitter.makeParticles('cat');
+emitter.setXSpeed(10,100);				//速度介于之间
+emitter.setYSpeed(10,100);				//速度介于之间
+emitter.setScale(0,1,0,1,3000);			//x,y缩放最小最大值,3秒过度
+emitter.setAlpha(0, 1, 3000);			//最后还有缓动函数
+emitter.setRotation(0,90);				//旋转
+//一次性发射所有粒子,生存时间,间隔时间,多少粒子需要发射
+emitter.start(false, 3000, 1000, 100);
+
+//发射多个物体
+emitter.makeParticles('man', [0,1]);
+emitter.flow(3000,1000, 10, -1);//持续时间,间隔时间,每次发射多少,总共少-1无数
+
+//粒子发射器 x,y,最大粒子数
+emitter = game.add.emitter(100, 100, 50);
+emitter.makeParticles('cat','',1000,true,true);//最后1粒子碰撞2粒子世界碰撞
+emitter.gravity = 600;
+emitter.bounce.y = 0.8;
+emitter.flow(0,3000, 1, -1);//持续时间0不消失,间隔时间,每次发射多少,总共少-1无数
+game.physics.arcade.collide(emitter);//update
 
 ```
 
