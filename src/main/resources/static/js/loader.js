@@ -16,7 +16,7 @@ var loaderState = function (game) {
         game.load.image('a8','res/a8.png');
         game.load.image('a9','res/a9.png');
         game.load.image('girl','res/girl.png');
-        game.load.audio('sound1','res/Paul Desmond-Bossa Antigua.mp3');
+        game.load.audio('sound1','res/music.mp3');
 
         game.load.onFileComplete.add(function () {
             var progress = game.load.progress;//1表示1% 100表示

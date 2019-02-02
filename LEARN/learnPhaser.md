@@ -389,3 +389,24 @@ if(keys.right.isDown){}；						//如果键盘右按下，执行函数
 game.input.onDown.add(function () {});	//鼠标单击
 ```
 
+
+
+## 音频
+
+### 普通音频
+
+```javascript
+game.load.audio('foo','res/music.mp3');
+var sound = game.add.audio('foo');
+sound.play();
+```
+
+
+
+## 物理引擎
+
+```javascript
+game.physics.startSystem(Phaser.Physics.ARCADE);//开启物理引擎
+
+```
+

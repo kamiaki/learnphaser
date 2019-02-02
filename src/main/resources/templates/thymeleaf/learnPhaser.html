@@ -32,6 +32,7 @@
                 game.scale.pageAlignHorizontally = true;    //水平居中
                 game.scale.pageAlignVertically = true;      //垂直居中
 
+
             },
             this.preload = function(){
                 game.load.image('backgroud','res/backgroud.png');
@@ -43,6 +44,8 @@
                 game.load.tilemap('mario_map', 'res/mario.json',null,Phaser.Tilemap.TILED_JSON);
                 game.load.image('mario','res/mario.png');
                 game.load.image('player','res/player.png');//玩家
+                game.load.audio('foo','res/music.mp3');
+
 
             },
             this.create = function(){
@@ -65,7 +68,8 @@
                 game.camera.follow(player);
 
                 cursors = game.input.keyboard.createCursorKeys();
-
+                var sound = game.add.audio('foo');
+                sound.play();
             },
             this.update = function(){
                 game.physics.arcade.collide(player, layer);//碰撞检测
