@@ -239,6 +239,69 @@ group.alpha = 0.5;						//设置组属性
 group.x = 100;
 ```
 
+### 瓦片地图对象
+
+```javascript
+//使用 tiled 软件
+//preload
+game.load.tilemap('mario_map','res/mario.json',null,Phaser.Tilemap.TILED_JSON);
+game.load.image('mario','res/mario.png');
+
+//create
+var map = game.add.tilemap('mario_map');
+map.addTilesetImage('mario', 'mario');		//1 合集图片名称 2加载图片名称
+var layer = map.createLayer('world');		//tiled 图层名
+
+var tile = map.getTile(0, 24);			//指定位置获取瓦片
+map.putTile(tile, 0, 0);				//指定位置填充
+map.fill(12,0,0,20,20);					//指定位置填充 1瓦片资源上索引
+var tiles = map.copy(0,19,5,5);			//复制和粘贴
+map.paste(0,0, tiles);					//复制和粘贴
+map.replace(1,12,0,0,10,10);	//替换不填替所有 1替换的瓦片 2用哪个瓦片替换
+
+////////碰撞//////////////////
+var player;
+var cursors;
+var layer;
+//preload
+game.load.tilemap('mario_map', 'res/mario.json',null,Phaser.Tilemap.TILED_JSON);
+game.load.image('mario','res/mario.png');
+game.load.image('player','res/player.png');//玩家
+//create
+var map = game.add.tilemap('mario_map');
+map.addTilesetImage('mario', 'mario');//1 合集图片名称 2加载图片名称
+layer = map.createLayer('world');//tiled 图层名
+layer.resizeWorld();//调整世界大小为地图大小
+
+map.setCollisionBetween(15,16); //设置碰撞的图范围 资源图索引
+map.setCollisionBetween(20,25);
+map.setCollisionBetween(27,29);
+map.setCollision(40);   //设置碰撞的图 资源图索引
+
+game.physics.startSystem(Phaser.Physics.ARCADE);//系统开启物理引擎
+player = game.add.sprite(32, 32, 'player');
+game.physics.enable(player);//对象开启物理引擎
+game.physics.arcade.gravity.y = 250;//添加重力
+player.body.bounce.y = 0.2;//添加弹性
+game.camera.follow(player);//镜头跟随
+
+cursors = game.input.keyboard.createCursorKeys();//键盘交互
+//update
+game.physics.arcade.collide(player, layer);//碰撞检测
+player.body.velocity.x = 0;//x轴速度0
+if(cursors.up.isDown){
+    if(player.body.onFloor()){
+        player.body.velocity.y = -250;
+    }
+}
+if(cursors.right.isDown){
+    player.body.velocity.x = 250;
+}
+if(cursors.left.isDown){
+    player.body.velocity.x = -250;
+}
+```
+
 
 
 ## 动画

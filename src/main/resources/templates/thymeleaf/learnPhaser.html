@@ -21,12 +21,12 @@
     <div id="div_phaser" style="width: 1000px;height: 1000px;border: 1px solid red"></div>
 
     <script>
-        var game = new Phaser.Game(800,800,Phaser.CANVAS,'div_phaser');
+        var game = new Phaser.Game(400,400,Phaser.CANVAS,'div_phaser');
 
-        var cat;
-        var graphics;
+        var player;
+        var cursors;
+        var layer;
 
-        var emitter;
         function state() {
             this.init = function(){
                 game.scale.pageAlignHorizontally = true;    //水平居中
@@ -37,30 +37,53 @@
                 game.load.image('backgroud','res/backgroud.png');
                 game.load.image('cat','res/cat.jpg');
                 game.load.spritesheet('sprite', 'res/a1.png', 32, 32);
-
                 game.load.bitmapFont('font','res/font.png','res/font.fnt')
-
                 game.load.atlasXML('man','res/r.png','res/r.xml');
+
+                game.load.tilemap('mario_map', 'res/mario.json',null,Phaser.Tilemap.TILED_JSON);
+                game.load.image('mario','res/mario.png');
+                game.load.image('player','res/player.png');//玩家
+
             },
             this.create = function(){
-                game.world.setBounds(0, 0, 2000, 2000);//设置世界大小
-                var bg = game.add.image(0,0,'backgroud');
+                var map = game.add.tilemap('mario_map');
+                map.addTilesetImage('mario', 'mario');//1 合集图片名称 2加载图片名称
+                layer = map.createLayer('world');//tiled 图层名
 
-                //粒子发射器 x,y,最大粒子数
-                emitter = game.add.emitter(100, 100, 50);
-                emitter.makeParticles('cat', '',1000,true,true);//最后 粒子碰撞 粒子世界碰撞
-                emitter.gravity = 600;
-                emitter.bounce.y = 0.8;
-                emitter.flow(0,3000, 1, -1);//持续时间0不消失,间隔时间,每次发射多少,总共少-1无数
+                layer.resizeWorld();//调整世界大小为地图大小
+
+                map.setCollisionBetween(15,16); //设置碰撞的图范围 资源图索引
+                map.setCollisionBetween(20,25);
+                map.setCollisionBetween(27,29);
+                map.setCollision(40);   //设置碰撞的图 资源图索引
+
+                game.physics.startSystem(Phaser.Physics.ARCADE);
+                player = game.add.sprite(32, 32, 'player');
+                game.physics.enable(player);
+                game.physics.arcade.gravity.y = 250;
+                player.body.bounce.y = 0.2;
+                game.camera.follow(player);
+
+                cursors = game.input.keyboard.createCursorKeys();
+
             },
             this.update = function(){
-                var keys = game.input.keyboard.createCursorKeys();
-                if(keys.right.isDown) game.camera.x += 10;
-                else if(keys.left.isDown) game.camera.x -= 10;
-                else if(keys.down.isDown) game.camera.y += 10;
-                else if(keys.up.isDown) game.camera.y -= 10;
+                game.physics.arcade.collide(player, layer);//碰撞检测
 
-                game.physics.arcade.collide(emitter);
+                player.body.velocity.x = 0;
+                if(cursors.up.isDown){
+                    if(player.body.onFloor()){
+                        player.body.velocity.y = -250;
+                    }
+                }
+                if(cursors.right.isDown){
+                    player.body.velocity.x = 250;
+                }
+                if(cursors.left.isDown){
+                    player.body.velocity.x = -250;
+                }
+
+
             }
         }
 
