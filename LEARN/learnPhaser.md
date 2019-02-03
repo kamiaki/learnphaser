@@ -374,19 +374,120 @@ game.physics.arcade.collide(emitter);//update
 
 ## 交互输入
 
-### 键盘交互
+### 事件系统
 
 ```javascript
-var keys = game.input.keyboard.createCursorKeys();	//监听键盘对象
-if(keys.right.isDown){}；						//如果键盘右按下，执行函数
+game.onBlur.add(function () {});    //失去焦点
+game.onFocus.add(function () {});   //得到焦点
+game.onPause.add(function () {});   //暂停事件
+game.onResume.add(function () {});  //恢复事件
 
+game.scale.onfullscreenchange       //退出全屏
+game.scale.onorientationchange      //横竖屏切换
+game.scale.onSizeChange             //尺寸改变
+
+game.load.onFileComplete    //加载完成时
+game.load.onFileError       //加载失败
+game.load.onFileStart       //开始加载
+game.load.onLoadComplete    //所有资源加载完成
+
+var tween = game.add.tween();
+tween.onStart       //补间动画开始时
+tween.onComplete    //动画完成
+tween.onLoop        //动画循环
+tween.onRepeat      //动画重复
+
+var animation = new Phaser.Animation();
+animation.onStart       //补间动画开始时
+animation.onComplete    //动画完成
+animation.onLoop        //动画循环
+animation.onUpdate      //动画帧变化
 
 ```
 
-### 鼠标点击
+
+
+### 键盘交互
 
 ```javascript
-game.input.onDown.add(function () {});	//鼠标单击
+var keyboard = game.input.keyboard;//获取键盘对象
+keyboard.addCallbacks(context, onDown, onUp, onPress);//添加按键回调
+var key = keyboard.addKey(keycode);//创建一个键对象 返回Phaser.Key
+key.isDown      //按下判断
+key.isUp        //释放判断
+key.onDown      //按下signal对象
+key.onUp        //释放signal对象
+key.altKey      //同时alt判断
+key.ctrlKey     //同时ctrl判断
+key.shiftKey    //同时shift判断
+keyboard.createCursorKeys();//创建一个包含上下左右方向键的对象
+var keys = game.input.keyboard.createCursorKeys();	//监听键盘对象
+if(keys.right.isDown){}；						//如果键盘右按下，执行函数
+
+//键盘移动 实例
+//create
+sprite = game.add.sprite(300, 300, 'cat');//创建精灵
+upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
+downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
+leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
+rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+//update
+//这么写可以保证斜向上方移动
+if(upKey.isDown){
+    sprite.y--;
+}
+else if (downKey.isDown){
+    sprite.y++;
+}
+if (leftKey.isDown){
+    sprite.x--;
+}
+else if (rightKey.isDown){
+    sprite.x++;
+}
+
+```
+
+### 鼠标点击交互
+
+```javascript
+game.input.onDown   //按下事件
+game.input.onUp     //离开事件
+game.input.onTap    //轻击事件
+game.input.onHold   //长按事件
+
+game.input.addMoveCallback(callback, context);      //鼠标手指移动监听
+game.input.deleteMoveCallback(callback, context);   //删除监听
+
+var pointer = game.input.activePointer; //鼠标和手指 指针事件
+pointer.clientX     //事件发生时指针x坐标
+pointer.clientY     //事件发生时指针y坐标
+pointer.isDown      //指针按下
+pointer.isUp        //指针释放
+
+var mouse = game.input.mouse;//鼠标对象
+mouse.mouseWheelCallback//设置鼠标滚动
+mouse.wheelDelta//1上上滚 -1向下滚
+
+var mousePointer = game.input.mousePointer;//鼠标定制对象
+mousePointer.leftButton //鼠标左键
+mousePointer.middleButton//鼠标中键
+mousePointer.rightButton//鼠标右键
+
+//实例 画笔实例 create里
+var graphics = game.add.graphics(0,0);
+function draw() {
+    var pointer = game.input.activePointer;
+    graphics.drawCircle(pointer.x,pointer.y,10);
+}
+game.input.onDown.add(function () {
+    graphics.beginFill(0xffffff);
+    draw();
+    game.input.addMoveCallback(draw);
+});
+game.input.onUp.add(function () {
+    game.input.deleteMoveCallback(draw);
+});
 ```
 
 
