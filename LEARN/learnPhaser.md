@@ -490,6 +490,28 @@ game.input.onUp.add(function () {
 });
 ```
 
+### 特定对象交互
+
+```javascript
+var sprite = game.add.sprite(10,10,'sprite');
+sprite.inputEnabled = true;				//开启输入事件
+var events = sprite.events;				//获取events对象
+events.onInputDown.add(function () {});		//点击
+events.onInputUp.add(function () {});		//释放
+events.onInputOver.add(function () {});		//进入
+events.onInputOut.add(function () {});		//离开
+
+var sprite = game.add.sprite(10,10,'sprite');
+sprite.inputEnabled = true;//开启输入事件
+var inputHandler = sprite.input;
+inputHandler.enableDrag();  //能拖动
+inputHandler.disableDrag(); //禁止拖动
+inputHandler.pointerOver(); //判断指针是否在内
+inputHandler.pointerX();    //判断指针相对对象x位置
+inputHandler.pointerY();    //判断指针相对对象y位置
+inputHandler.bringToTop;    //拖动时自动放置最顶层
+```
+
 
 
 ## 音频

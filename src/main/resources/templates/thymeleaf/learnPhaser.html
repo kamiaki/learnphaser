@@ -27,7 +27,7 @@
         var cursors;
         var layer;
         var sprite;
-
+        var inputHandler;
 
         function state() {
             this.init = function(){
@@ -51,25 +51,20 @@
 
             },
             this.create = function(){
-                sprite = game.add.sprite(300, 300, 'cat');//创建精灵
-                upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-                downKey = game.input.keyboard.addKey(Phaser.Keyboard.DOWN);
-                leftKey = game.input.keyboard.addKey(Phaser.Keyboard.LEFT);
-                rightKey = game.input.keyboard.addKey(Phaser.Keyboard.RIGHT);
+                var sprite = game.add.sprite(10,10,'sprite');
+                sprite.inputEnabled = true;//开启输入事件
+                var inputHandler = sprite.input;
+                inputHandler.enableDrag();  //能拖动
+                inputHandler.disableDrag(); //禁止拖动
+                inputHandler.pointerOver(); //判断指针是否在内
+                inputHandler.pointerX();    //判断指针相对对象x位置
+                inputHandler.pointerY();    //判断指针相对对象y位置
+                inputHandler.bringToTop;    //拖动时自动放置最顶层
             },
+
+
             this.update = function(){
-                if(upKey.isDown){
-                    sprite.y--;
-                }
-                else if (downKey.isDown){
-                    sprite.y++;
-                }
-                if (leftKey.isDown){
-                    sprite.x--;
-                }
-                else if (rightKey.isDown){
-                    sprite.x++;
-                }
+
 
             }
         }
