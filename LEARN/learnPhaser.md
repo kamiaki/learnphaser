@@ -516,20 +516,154 @@ inputHandler.bringToTop;    //拖动时自动放置最顶层
 
 ## 音频
 
+### 载入音频
+
+```javascript
+//载入
+game.load.audio('foo','res/music.mp3');						//加载音频
+game.load.audio('foo', ['res/music.mp3', 'res/music.wav']);		//加载数组
+game.load.audiosprite(key, urls, jsonURL?, jsonData?, autoDecode?);	//片段
+```
+
 ### 普通音频
 
 ```javascript
-game.load.audio('foo','res/music.mp3');
 var sound = game.add.audio('foo');
-sound.play();
+//播放 播放标注的那段,标注位置,音量(0~1),循环,强制重新开始
+sound.play(marker, position, volume, loop, forceRestart);
+sound.pause();//暂停
+sound.resume();//恢复
+sound.stop();//停止
+  
+//淡入淡出效果
+sound.fadeIn(duration, loop, marker);//淡入淡出时间,循环,标记那段
+sound.fadeOut(duration);//时间
+sound.fadeTo(duration, volume);//时间,制定音量(0~1)
+```
+
+### 音频事件
+
+```javascript
+sound.onPlay.add(function () {
+	alert("播放时");
+});
+sound.onPause.add(function () {});//暂停
+sound.onResume.add(function () {});//恢复
+sound.onStop.add(function () {});//停止
+sound.onFadeComplete.add(function () {});//淡入淡出完成
+sound.onMarkerComplete.add(function () {});//标记播放完
+sound.onLoop.add(function () {});//循环时
+sound.onMute.add(function () {});//静音时
 ```
 
 
 
 ## 物理引擎
 
-```javascript
-game.physics.startSystem(Phaser.Physics.ARCADE);//开启物理引擎
+### 开启物理引擎
 
+```javascript
+//开启物理引擎
+game.physics.startSystem(Phaser.Physics.ARCADE);
+//组开启物理引擎
+var group = game.add.group();
+group.enableBody = true;
+group.physicsBodyType = Phaser.Physics.ARCADE;
+group.setAll('body.bounce', new Phaser.Point(0.5, 0.5));//每个元素设置
+//在精灵对象上开启物理引擎
+game.physics.enable(sprite, Phaser.Physics.ARCADE);
+//设置速度属性
+sprite.body.velocity = new Phaser.Point(100, 100);
+sprite.body.velocity.set(100);
+sprite.body.velocity.x = 100;
+sprite.body.velocity.y = 100;
+//设置加速度属性
+sprite.body.acceleration = new Phaser.Point(100, 100);
+sprite.body.acceleration.set(100);
+sprite.body.acceleration.x = 100;
+sprite.body.acceleration.y = 100;
+//设置角速度属性
+sprite.body.angularVelocity = 90;
+//设置角加速度
+sprite.body.angularAcceleration = 45;
+//设置阻力
+sprite.body.drag = new Phaser.Point(-100, -100);
+sprite.body.drag.set(100);
+sprite.body.drag.x = 100;
+sprite.body.drag.y = 100;
+//设置重力
+sprite.body.gravity = new Phaser.Point(100, 100);
+sprite.body.gravity.set(100);
+sprite.body.gravity.x = 100;
+sprite.body.gravity.y = 100;
+//设置弹力
+sprite.body.bounce = new Phaser.Point(0.5, 0.5);
+sprite.body.bounce.set(0.5);
+sprite.body.bounce.x = 0.5;
+sprite.body.bounce.y = 0.5;
+//其他重要属性
+sprite.body.friction.set(100);//摩擦力
+sprite.body.rotation = Math.PI;//设置角度
+sprite.body.immovable = true;//固定不动
+sprite.body.mass = 10;//质量
+sprite.body.maxVelocity.set(100, 100);//最大速度
+sprite.body.maxAngular = 1000;//最大角速度
+sprite.body.setSize(width, height, offsetX, offsetY);//设置body大小
+sprite.body.reset(x, y);//重置所有物理属性
+//追踪效果
+game.physics.arcade.moveToXY(sprite, x, y, speed);//精灵移动到坐标值
+game.physics.arcade.moveToObject(sprite, destination, speed);//精灵移动到对象
+game.physics.arcade.moveToPointer(sprite, speed, pointer);//精灵移动到指针
+game.physics.arcade.accelerateToXY(sprite, x, y, speed);//精灵移动到坐标值
+game.physics.arcade.accelerateToObject(sprite, destination, speed);//精灵移动到对象
+game.physics.arcade.accelerateToPointer(sprite, speed, pointer);//精灵移动到指针
+```
+
+### 计算工具
+
+```javascript
+//计算角度
+game.physics.arcade.angleBetween(source, target);
+game.physics.arcade.angleToPointer(displayObject, pointer);
+game.physics.arcade.angleToXY(displayObject, x, y);
+//计算距离
+game.physics.arcade.distanceBetween(source, target);
+game.physics.arcade.distanceToPointer(displayObject, pointer);
+//计算速度
+game.physics.arcade.computeVelocity(axis, body, velocity, acceleration, drag);
+game.physics.arcade.velocityFromAngle(angle, speed, point);
+
+/////////////////////////////
+//碰撞不产生物理效果
+game.physics.arcade.overlap(sprite, sprite2, function () {
+    alert("碰撞");
+});
+//碰撞有真实效果 update 里面调用
+game.physics.arcade.collide(sprite, sprite2, function () {
+    alert("碰撞");
+});
+//组与组的碰撞检测
+game.physics.arcade.collide(group1, group2);
+//本组开启碰撞检测
+game.physics.arcade.collide(group1);
+```
+
+
+
+### 碰撞检测
+
+```javascript
+//碰撞不产生物理效果
+game.physics.arcade.overlap(sprite, sprite2, function () {
+    alert("碰撞");
+});
+//碰撞有真实效果 update 里面调用
+game.physics.arcade.collide(sprite, sprite2, function () {
+    alert("碰撞");
+});
+//组与组的碰撞检测
+game.physics.arcade.collide(group1, group2);
+//本组开启碰撞检测
+game.physics.arcade.collide(group1);
 ```
 
