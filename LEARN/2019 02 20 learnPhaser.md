@@ -790,6 +790,7 @@ game.physics.arcade.accelerateToXY(sprite, x, y, speed);			//精灵移动到坐�
 game.physics.arcade.accelerateToObject(sprite, destination, speed);	//精灵移动到对象
 game.physics.arcade.accelerateToPointer(sprite, speed, pointer);	//精灵移动到指针
 
+sprite.body.touching.down;	//判断有没有踩到东西上
 sprite.body.allowGravity = false;		//有没有重力
 sprite.body.collideWorldBounds = true;	//不出边界
 ```
