@@ -350,6 +350,15 @@ this.poolfun = function(){
         item.outOfBoundsKill = true;
     }
 }
+
+//更高级的用法
+var coin = myPayCoinGroup.getFirstExists(false)
+if (coin == null) {
+    //创建新的游戏对象
+}
+else {
+    //重用之前的对象，修改对象的相关属性值
+}
 ```
 
 ### 瓦片地图对象
