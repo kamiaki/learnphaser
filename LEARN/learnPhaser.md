@@ -3,7 +3,32 @@
 ## 小技巧
 
 ```javascript
-game.world.centerX	game.world.centerY	//获取世界中心
+//游戏画布尺寸
+var width = game.width,
+var height = game.height;
+
+//获取世界中心
+game.world.centerX
+game.world.centerY
+
+//随机坐标
+game.world.randomX
+game.world.randomY
+
+//判断是桌面还是手机
+if(game.device.desktop){console.info('桌面');}
+else{console.info('手机');}
+
+//判断横屏还是竖屏
+if(game.scale.isLandscape){ console.info('//横屏') }
+else{ console.info('//竖屏') }
+
+//设置全屏世界
+var width = window.innerWidth;
+var height = window.innerHeight;
+
+//随机生成让那个 min 到 max 的数字
+game.rnd.between(60,150 - 60);
 ```
 
 
@@ -21,7 +46,7 @@ game.paused = true;		//暂停
 game.paused = false;	//暂停结束
 
 game.add;		//对象工厂
-game .sound;	//声音
+game.sound;		//声音
 game.camera;	//摄像机
 game.input;		//交互
 game.load;		//资源加载
@@ -62,8 +87,33 @@ game.load.onFileComplete.add(function () {
     var progress = game.load.progress;	//1表示1% 100表示
 })
 //所有资源加载完成事件
-game.load.onLoadComplete.add(function () {
-})
+game.load.onLoadComplete.add(function () {});
+
+///////////////////////////////////进度条以图片方式展示实例
+var boot = function() {
+    this.preload = function() {
+        game.load.image('loading', 'res/方块.png');
+    }
+    this.create = function() {
+        game.state.start('preload');
+    }
+}
+var preload = function() {
+    this.preload = function() {
+        var preloadSprite = game.add.sprite(game.width / 2, game.height / 2, 'loading');
+        preloadSprite.anchor.setTo(0.5, 0.5);
+        //用setPreloadSprite方法来实现动态进度条的效果，preloadSprite为load的精灵
+        game.load.setPreloadSprite(preloadSprite);
+        game.load.audio('foo','res/music.mp3');
+        game.load.audio('aaa','res/music.mp3');
+        game.load.audio('bbb','res/music.mp3');
+    }
+    this.create = function() {
+    }
+}
+game.state.add('state1',boot);
+game.state.add('preload',preload);
+game.state.start('state1');
 ```
 
 ### 舞台场景摄像机
@@ -78,6 +128,19 @@ game.camera.focusOn(object);		//摄像机定位到某个对象上
 game.camera.focusOnXY(1000,1000);	//摄像机定位到某个点上
 game.camera.follow(object);			//摄像机跟随某个对象移动
 
+//	产生一个相机拍摄闪烁效果
+//	color指flash效果的颜色，默认0xffffff
+//	duration指效果持续时间，默认500ms
+//	force默认false，值为true时，如果当前存在一个camera flash效果在运行，则新的效果代替原来的并重置持续时间
+flash(color,duration,force);
+
+//	产生一个相机拍摄抖动效果
+//	intensity指抖动强度，默认0.05
+//	duration指持续时间，默认500ms
+//	force默认true，值为true时，如果当前存在一个camera shake效果在运行，则新的效果代替原来的并重置持续时间
+//	direction指抖动方向，默认Phaser.Camera.SHAKE_BOTH，还有Phaser.Camera.SHAKE_HORIZONTAL 或 Phaser.Camera.SHAKE_VERTICAL
+//	shakeBounds默认值为true，抖动效果是否超出边界
+shake(intensity, duration, force, direction, shakeBounds);
 ```
 
 ### 缩放
@@ -90,7 +153,6 @@ game.scale.scaleMode = Phaser.ScaleManager.EXACT_FIT;   //缩放到父元素大�
 game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;   //保持比例,缩放到父元素大小
 game.scale.scaleMode = Phaser.ScaleManager.USER_SCALE;   //自定义
 game.scale.setUserScale(0.1,0.1);                       //设置自定义缩放比例
-
 ```
 
 
@@ -133,10 +195,27 @@ graphics.arc(100,300,50,0,Math.PI);                 		//弧形
 graphics.drawRoundedRect(500,100,40,40,30);     //圆角矩形
 
 graphics.moveTo(800,0);              	//直线起点
-graphics.lineTo(400,600);              //直线重点
+graphics.lineTo(400,600);              //直线终点
 
 graphics.moveTo(300,500);              				//曲线起点
-graphics.bezierCurveTo(700,600,600,500,300,200);    //曲线：控制点1，控制点2，重点
+graphics.bezierCurveTo(700,600,600,500,300,200);    //曲线：控制点1，控制点2，终点
+
+//绘制大地实例
+var land = game.add.graphics(0,game.height -127/2);
+land.beginFill(0xce9424);
+land.moveTo(0,0);
+land.lineTo(game.width, 0);
+land.lineTo(game.width, game.height);
+land.lineTo(0,game.height);
+```
+
+### 图形对象
+
+```javascript
+//基本图形 限定范围之类的用
+var line = new Phaser.Line(0,0,120,120);
+var circle = new Phaser.Circle(game.world.centerX,100,64);
+var rect = new Phaser.Rectangle(x,y,width,height);
 ```
 
 ### 按钮对象
@@ -237,6 +316,40 @@ group.create(20,20,'cat');					//创建精灵同时添加进分组
 group.create(50,90,'cat');
 group.alpha = 0.5;						//设置组属性
 group.x = 100;
+
+//对组中的物体全部设置属性
+redgroup.setAll('checkWorldBounds',true);
+//对组中的物体全部调用函数
+redgroup.callAll('events.onOutOfBounds.add', 'events.onOutOfBounds', this.fRemoveRedpack);
+//设置组中所有物体的anchor为0.5,1.0
+redgroup.callAll('anchor.setTo', 'anchor', 0.5, 1.0);
+```
+
+#### 对象池
+
+```javascript
+//总体思路就是:池子中一共有8个,没了一个.就把那个没的重置.
+//在create里
+group = game.add.group();
+group.enableBody = true;
+group.createMultiple(8,'rect2');                //池子中一共8个
+group.setAll('checkWorldBounds',true);
+group.setAll('outOfBoundsKill',true);           //超出边界销毁
+game.time.events.loop(300,this.poolfun,this);   //定时将组中对象重置
+
+//新建一个函数
+this.poolfun = function(){
+    // var item = this.redgroup.getFirstDead(true); //等价
+    var item = group.getFirstExists(false,true);//取出第一个死的或不存在的
+    var left = game.rnd.between(60,150 - 60);       //随机一个出现的x坐标
+    if(item){
+        item.reset(left,0);         //由于有超出边界检测，所以不能设置y为负值
+        item.scale.set(0.5);
+        item.body.velocity.y = 300;
+        item.checkWorldBounds = true;
+        item.outOfBoundsKill = true;
+    }
+}
 ```
 
 ### 瓦片地图对象
@@ -302,7 +415,35 @@ if(cursors.left.isDown){
 }
 ```
 
+### 子弹对象
 
+```javascript
+//	返回一个Phaser.Weapon对象，weapon提供了一个创造子弹库的能力;
+weapon(quantity, key, frame, group);
+//	quantity默认为1,weapon产生子弹的数量，值为-1时可自动扩展；
+//	key指子弹的图像；
+//	frame指被用作子弹图像的帧ID或frame name；
+//	group指weapon添加至哪个组
+
+//	Phaser.Weapon 
+//	bulletAngleOffset：返回一个number类型，发射子弹的角度偏移
+//	bulletAngleVariance：返回一个number类型，子弹发射角度的偏差
+//	bulletSpeed：返回一个number类型，子弹发射的速度，pixels/s
+//	fire(from,x,y)：返回Phaser.Bullet对象，尝试发射单颗子弹，如果子弹库中没有子弹且子弹库不可扩展，则返回false，如果距离上一次发射子弹时间过短也返回false
+//	fireAngle：返回一个integer类型，子弹发射角度
+
+//	返回一个Phaser.Weapon对象，使weapon追踪给定的sprite或world中的对象，
+trackSprite(sprite, offsetX, offsetY, trackRotation);
+//	sprite指给定的追踪对象，即发射子弹的对象;
+//	offsetX指sprite与weapon间的水平偏移，默认为0;
+//	offsetY指sprite与weapon间的垂直偏移，默认为0;
+//	trackRotation默认为false，指是否应该追踪sprite的旋转;
+//	调用该函数时会重置Weapon.trackedPointer为null;
+```
+
+
+
+------
 
 ## 动画
 
@@ -360,7 +501,8 @@ emitter.flow(3000,1000, 10, -1);//持续时间,间隔时间,每次发射多少,�
 
 //粒子发射器 x,y,最大粒子数
 emitter = game.add.emitter(100, 100, 50);
-emitter.makeParticles('cat','',1000,true,true);//最后1粒子碰撞2粒子世界碰撞
+//最后两个参数(true,true):	1.粒子间碰撞 2.粒子与世界碰撞
+emitter.makeParticles('cat','',1000,true,true);
 emitter.gravity = 600;
 emitter.bounce.y = 0.8;
 emitter.flow(0,3000, 1, -1);//持续时间0不消失,间隔时间,每次发射多少,总共少-1无数
@@ -403,6 +545,8 @@ animation.onComplete    //动画完成
 animation.onLoop        //动画循环
 animation.onUpdate      //动画帧变化
 
+//定时器
+game.time.events.loop(300,callback,this);
 ```
 
 
@@ -410,6 +554,7 @@ animation.onUpdate      //动画帧变化
 ### 键盘交互
 
 ```javascript
+//方法一
 var keyboard = game.input.keyboard;//获取键盘对象
 keyboard.addCallbacks(context, onDown, onUp, onPress);//添加按键回调
 var key = keyboard.addKey(keycode);//创建一个键对象 返回Phaser.Key
@@ -420,11 +565,13 @@ key.onUp        //释放signal对象
 key.altKey      //同时alt判断
 key.ctrlKey     //同时ctrl判断
 key.shiftKey    //同时shift判断
+
+//方法二
 keyboard.createCursorKeys();//创建一个包含上下左右方向键的对象
 var keys = game.input.keyboard.createCursorKeys();	//监听键盘对象
 if(keys.right.isDown){}；						//如果键盘右按下，执行函数
 
-//键盘移动 实例
+//键盘移动 实例（方法一）
 //create
 sprite = game.add.sprite(300, 300, 'cat');//创建精灵
 upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
@@ -465,9 +612,9 @@ pointer.clientY     //事件发生时指针y坐标
 pointer.isDown      //指针按下
 pointer.isUp        //指针释放
 
-var mouse = game.input.mouse;//鼠标对象
-mouse.mouseWheelCallback//设置鼠标滚动
-mouse.wheelDelta//1上上滚 -1向下滚
+var mouse = game.input.mouse;	//鼠标对象
+mouse.mouseWheelCallback;		//设置鼠标滚动
+mouse.wheelDelta;				//1上上滚 -1向下滚
 
 var mousePointer = game.input.mousePointer;//鼠标定制对象
 mousePointer.leftButton //鼠标左键
@@ -495,6 +642,7 @@ game.input.onUp.add(function () {
 ```javascript
 var sprite = game.add.sprite(10,10,'sprite');
 sprite.inputEnabled = true;				//开启输入事件
+sprite.input.useHandCursor = true;		//鼠标放上去变成手的形状
 var events = sprite.events;				//获取events对象
 events.onInputDown.add(function () {});		//点击
 events.onInputUp.add(function () {});		//释放
@@ -502,7 +650,7 @@ events.onInputOver.add(function () {});		//进入
 events.onInputOut.add(function () {});		//离开
 
 var sprite = game.add.sprite(10,10,'sprite');
-sprite.inputEnabled = true;//开启输入事件
+sprite.inputEnabled = true;			//开启输入事件
 var inputHandler = sprite.input;
 inputHandler.enableDrag();  //能拖动
 inputHandler.disableDrag(); //禁止拖动
@@ -510,19 +658,37 @@ inputHandler.pointerOver(); //判断指针是否在内
 inputHandler.pointerX();    //判断指针相对对象x位置
 inputHandler.pointerY();    //判断指针相对对象y位置
 inputHandler.bringToTop;    //拖动时自动放置最顶层
+
+//拖动实例
+player.inputEnabled = true;
+player.input.allowVerticalDrag = false;					//只能水平方向上拖动
+var dragRect = new Phaser.Rectangle(0,0,gWidth,gHeight);
+player.input.enableDrag(false,false,false,255,dragRect);	//不能超出范围
+```
+
+### 边界检测事件
+
+```javascript
+sprite.checkWorldBounds = true;						//设置超出边界检测
+sprite.events.onEnterOfBounds.add(callback,this);	//对精灵进入边界进行处理
+sprite.events.onOutOfBounds.add(callback,this);		//对精灵离开边界进行处理
+
+sprite.checkWorldBounds = true;		//必须开启checkWorldBound为true
+sprite.outOfBoundsKill = true;		//超出边界后自动kill，包括上下左右任意边界
 ```
 
 
+
+------
 
 ## 音频
 
 ### 载入音频
 
 ```javascript
-//载入
-game.load.audio('foo','res/music.mp3');						//加载音频
-game.load.audio('foo', ['res/music.mp3', 'res/music.wav']);		//加载数组
-game.load.audiosprite(key, urls, jsonURL?, jsonData?, autoDecode?);	//片段
+game.load.audio('foo','res/music.mp3');								//加载音频
+game.load.audio('foo', ['res/music.mp3', 'res/music.wav']);			//加载数组
+game.load.audiosprite(key, urls, jsonURL?, jsonData?, autoDecode?);		//片段
 ```
 
 ### 普通音频
@@ -536,27 +702,27 @@ sound.resume();//恢复
 sound.stop();//停止
   
 //淡入淡出效果
-sound.fadeIn(duration, loop, marker);//淡入淡出时间,循环,标记那段
-sound.fadeOut(duration);//时间
-sound.fadeTo(duration, volume);//时间,制定音量(0~1)
+sound.fadeIn(duration, loop, marker);	//淡入淡出时间,循环,标记那段
+sound.fadeOut(duration);				//时间
+sound.fadeTo(duration, volume);			//时间,制定音量(0~1)
 ```
 
 ### 音频事件
 
 ```javascript
-sound.onPlay.add(function () {
-	alert("播放时");
-});
-sound.onPause.add(function () {});//暂停
-sound.onResume.add(function () {});//恢复
-sound.onStop.add(function () {});//停止
-sound.onFadeComplete.add(function () {});//淡入淡出完成
-sound.onMarkerComplete.add(function () {});//标记播放完
-sound.onLoop.add(function () {});//循环时
-sound.onMute.add(function () {});//静音时
+sound.onPlay.add(function () {});			//播放时
+sound.onPause.add(function () {});			//暂停
+sound.onResume.add(function () {});			//恢复
+sound.onStop.add(function () {});			//停止
+sound.onFadeComplete.add(function () {});	//淡入淡出完成
+sound.onMarkerComplete.add(function () {});	//标记播放完
+sound.onLoop.add(function () {});			//循环时
+sound.onMute.add(function () {});			//静音时
 ```
 
 
+
+------
 
 ## 物理引擎
 
@@ -565,11 +731,13 @@ sound.onMute.add(function () {});//静音时
 ```javascript
 //开启物理引擎
 game.physics.startSystem(Phaser.Physics.ARCADE);
+
 //组开启物理引擎
 var group = game.add.group();
 group.enableBody = true;
 group.physicsBodyType = Phaser.Physics.ARCADE;
 group.setAll('body.bounce', new Phaser.Point(0.5, 0.5));//每个元素设置
+
 //在精灵对象上开启物理引擎
 game.physics.enable(sprite, Phaser.Physics.ARCADE);
 //设置速度属性
@@ -601,22 +769,29 @@ sprite.body.bounce = new Phaser.Point(0.5, 0.5);
 sprite.body.bounce.set(0.5);
 sprite.body.bounce.x = 0.5;
 sprite.body.bounce.y = 0.5;
+
 //其他重要属性
-sprite.body.friction.set(100);//摩擦力
-sprite.body.rotation = Math.PI;//设置角度
-sprite.body.immovable = true;//固定不动
-sprite.body.mass = 10;//质量
-sprite.body.maxVelocity.set(100, 100);//最大速度
-sprite.body.maxAngular = 1000;//最大角速度
-sprite.body.setSize(width, height, offsetX, offsetY);//设置body大小
-sprite.body.reset(x, y);//重置所有物理属性
+sprite.body.friction.set(100);							//摩擦力
+sprite.body.rotation = Math.PI;							//设置角度
+sprite.body.immovable = true;							//固定不动
+sprite.body.mass = 10;									//质量
+sprite.body.maxVelocity.set(100, 100);					//最大速度
+sprite.body.maxAngular = 1000;							//最大角速度
+sprite.body.setSize(width, height, offsetX, offsetY);	//设置body大小
+this.dragon.body.setCircle(this.dragon.width / 2);		//设置圆形物理轮廓
+this.dragon.body.offset.set(0, 0);						//恢复一下偏移为0
+sprite.body.reset(x, y);								//重置所有物理属性
+
 //追踪效果
-game.physics.arcade.moveToXY(sprite, x, y, speed);//精灵移动到坐标值
-game.physics.arcade.moveToObject(sprite, destination, speed);//精灵移动到对象
-game.physics.arcade.moveToPointer(sprite, speed, pointer);//精灵移动到指针
-game.physics.arcade.accelerateToXY(sprite, x, y, speed);//精灵移动到坐标值
-game.physics.arcade.accelerateToObject(sprite, destination, speed);//精灵移动到对象
-game.physics.arcade.accelerateToPointer(sprite, speed, pointer);//精灵移动到指针
+game.physics.arcade.moveToXY(sprite, x, y, speed);					//精灵移动到坐标值
+game.physics.arcade.moveToObject(sprite, destination, speed);		//精灵移动到对象
+game.physics.arcade.moveToPointer(sprite, speed, pointer);			//精灵移动到指针
+game.physics.arcade.accelerateToXY(sprite, x, y, speed);			//精灵移动到坐标值
+game.physics.arcade.accelerateToObject(sprite, destination, speed);	//精灵移动到对象
+game.physics.arcade.accelerateToPointer(sprite, speed, pointer);	//精灵移动到指针
+
+sprite.body.allowGravity = false;		//有没有重力
+sprite.body.collideWorldBounds = true;	//不出边界
 ```
 
 ### 计算工具
@@ -632,38 +807,36 @@ game.physics.arcade.distanceToPointer(displayObject, pointer);
 //计算速度
 game.physics.arcade.computeVelocity(axis, body, velocity, acceleration, drag);
 game.physics.arcade.velocityFromAngle(angle, speed, point);
-
-/////////////////////////////
-//碰撞不产生物理效果
-game.physics.arcade.overlap(sprite, sprite2, function () {
-    alert("碰撞");
-});
-//碰撞有真实效果 update 里面调用
-game.physics.arcade.collide(sprite, sprite2, function () {
-    alert("碰撞");
-});
-//组与组的碰撞检测
-game.physics.arcade.collide(group1, group2);
-//本组开启碰撞检测
-game.physics.arcade.collide(group1);
 ```
-
-
 
 ### 碰撞检测
 
 ```javascript
 //碰撞不产生物理效果
-game.physics.arcade.overlap(sprite, sprite2, function () {
-    alert("碰撞");
-});
-//碰撞有真实效果 update 里面调用
-game.physics.arcade.collide(sprite, sprite2, function () {
-    alert("碰撞");
-});
-//组与组的碰撞检测
-game.physics.arcade.collide(group1, group2);
-//本组开启碰撞检测
-game.physics.arcade.collide(group1);
+game.physics.arcade.overlap(sprite, sprite2, function () {});
+//碰撞有真实效果 update里面调用
+game.physics.arcade.collide(sprite, sprite2, function () {});
+
+game.physics.arcade.collide(group1, group2);	//组与组的碰撞检测
+game.physics.arcade.collide(group1);			//本组开启碰撞检测
 ```
 
+
+
+------
+
+## 调试相关
+
+### 调试
+
+```javascript
+//game.debug.body 显示物体轮廓
+this.render = function(){
+    //对组中的每个物体开启物理轮廓
+    group.forEach(function(item){
+        game.debug.body(item);
+    });
+    game.debug.body(sprite);//对单个物体开启物理轮廓
+    game.debug.text('debugText', 10, 30);//屏幕上显示一些调试文字
+}
+```
