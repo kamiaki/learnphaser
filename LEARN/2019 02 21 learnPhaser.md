@@ -393,8 +393,8 @@ game.load.image('mario','res/mario.png');
 
 //create
 var map = game.add.tilemap('mario_map');
-map.addTilesetImage('mario', 'mario');		//1 合集图片名称 2加载图片名称
-var layer = map.createLayer('world');		//tiled 图层名
+map.addTilesetImage('mario', 'mario');		//1去掉扩展名的文件名 2加载图片名称key
+var layer = map.createLayer('world');		//tiled 图层名 必须定义
 
 var tile = map.getTile(0, 24);			//指定位置获取瓦片
 map.putTile(tile, 0, 0);				//指定位置填充
