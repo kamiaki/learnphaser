@@ -339,25 +339,47 @@ game.time.events.loop(300,this.poolfun,this);   //定时将组中对象重置
 
 //新建一个函数
 this.poolfun = function(){
-    // var item = this.redgroup.getFirstDead(true); //等价
-    var item = group.getFirstExists(false,true);//取出第一个死的或不存在的
-    var left = game.rnd.between(60,150 - 60);       //随机一个出现的x坐标
+    var item = group.getFirstExists(false);				//取出第一个不存在的
+    var left = game.rnd.between(60, 90);       	//随机一个出现的x坐标
     if(item){
         item.reset(left,0);         //由于有超出边界检测，所以不能设置y为负值
         item.scale.set(0.5);
         item.body.velocity.y = 300;
-        item.checkWorldBounds = true;
-        item.outOfBoundsKill = true;
+        item.checkWorldBounds = true;	//判断出界
+        item.outOfBoundsKill = true;	//出界杀死
     }
 }
 
-//更高级的用法
-var coin = myPayCoinGroup.getFirstExists(false)
-if (coin == null) {
-    //创建新的游戏对象
-}
-else {
-    //重用之前的对象，修改对象的相关属性值
+//更高级的用法 实例 
+//一开始不创建精灵，需要用到的时候在创建。然后复用
+function state() {
+    this.preload = function(){
+        game.load.image('rect3','res/紫方块1.png');			//加载图片
+    },
+        this.create = function(){
+        game.physics.startSystem(Phaser.Physics.ARCADE);
+        group = game.add.group();
+        game.time.events.loop(100,this.pool,this);	
+    },
+        this.pool = function(){
+        var oldItem = group.getFirstExists(false);	//取第一个不存在的
+        if(oldItem){
+            this.setPhysics(oldItem);		//取到设置属性复用
+        }else{
+            var newItem = game.add.sprite(null, null, 'rect3');	//没取到就新建加入组
+            game.physics.enable(newItem, Phaser.Physics.ARCADE);
+            this.setPhysics(newItem);
+            group.add(newItem);
+        }
+    },
+        this.setPhysics = function (obj) {
+        var left = game.rnd.between(60, 90);
+        obj.reset(left, 0);
+        obj.scale.set(0.5);
+        obj.body.velocity.y = 300;
+        obj.checkWorldBounds = true;
+        obj.outOfBoundsKill = true;
+    }
 }
 ```
 
