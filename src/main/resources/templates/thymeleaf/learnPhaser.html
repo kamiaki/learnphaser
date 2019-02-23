@@ -6,47 +6,89 @@
     <meta charset="UTF-8">
     <title>learnPhaser</title>
     <script src="phaser/phaser.js"></script>
-    <script src="js/boot.js"></script>
-    <script src="js/loader.js"></script>
-
-    <style>
-        @font-face {
-            font-family: 'fzhyt';
-            src: url("res/活一体字体.TTF");
-        }
-    </style>
 </head>
 <body>
-    <h1 style="font-family: fzhyt">LearnPhaser</h1>
-    <div>
-        <a href="javascript:void(0)" onclick="test()">测试</a>
-    </div>
-    <div id="div_phaser" style="width: 150px;height: 150px;border: 1px solid red"></div>
+    <div id="div_phaser"></div>
     <script>
-        var game = new Phaser.Game(150,150,Phaser.CANVAS,'div_phaser');
-        var sprite;
-
-        function test() {
-            console.info("test");
-        }
+        var game = new Phaser.Game(400,300,Phaser.CANVAS,'div_phaser');
         function state() {
-            this.init = function(){
-                game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;   //保持比例,缩放到父元素大小
-            },
+            this.player = {};//玩家
+            this.upKey = {};
+            this.downKey = {};
+            this.leftKey = {};
+            this.rightKey = {};
+            this.layer = {};
+            this.layer1 = {};
+
+            this.init = function(){},
             this.preload = function(){
-                game.load.image('rect','res/方块.png');			//加载图片
+                game.load.tilemap('jsonMap','res/map_json1.json',null,Phaser.Tilemap.TILED_JSON);
+                game.load.image('dituImage','res/ditu_map.png');
+                game.load.spritesheet("player","res/guaiwu_player.png",32,32);
             },
             this.create = function(){
-                sprite = game.add.sprite(20, 20,'rect');	//添加一个精灵
+                game.physics.startSystem(Phaser.Physics.ARCADE);
+                this.initMap();
+                this.initPlayer();
+                this.resetPlayer(100, 10);
+                this.initKeyboard();
+
             },
             this.update = function(){
+                game.physics.arcade.collide(this.player, this.layer1);//碰撞检测
+                this.updateKeyboard();
 
+            },
+            this.render = function(){}
+            ,this.initMap = function () {
+                var map = game.add.tilemap('jsonMap');
+                map.addTilesetImage('ditu_map', 'dituImage');//1 合集图片名称 2加载图片名称
+                this.layer = map.createLayer('backgroud');//tiled 图层名
+                this.layer1 = map.createLayer('pengzhuang');//tiled 图层名
+                this.layer.resizeWorld();//调整世界大小为地图大小
+
+                map.setCollisionBetween(2,11);
+
+            }
+            ,this.initPlayer = function(){
+                this.player = game.add.sprite(null,null,'player',0);
+                this.player.animations.add('walk_right',[0,1,2,3]);
+                this.player.animations.add('walk_left',[4,5,6,7]);
+                game.camera.follow(this.player);//镜头跟随
+            }
+            ,this.resetPlayer = function(x, y){
+                game.physics.enable(this.player, Phaser.Physics.ARCADE);
+                this.player.reset(x, y);
+                this.player.body.bounce.y = 0.2;//添加弹性
+                this.player.body.collideWorldBounds = true;	//不出边界
+                this.player.body.gravity.y = 980;
+            }
+            ,this.initKeyboard = function(){
+                this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+                this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+                this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+                this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+            }
+            ,this.updateKeyboard = function () {
+                this.player.body.velocity.x = 0;
+                if(this.upKey.isDown){
+                    if(this.player.body.onFloor()){
+                        this.player.body.velocity.y = -1000;
+                    }
+                }
+                if (this.leftKey.isDown){
+                    this.player.body.velocity.x = -100;
+                    this.player.play('walk_left',10,true);
+                }
+                if (this.rightKey.isDown){
+                    this.player.body.velocity.x = 100;
+                    this.player.play('walk_right',10,true);
+                }
             }
         }
 
         game.state.add('state1',state);
         game.state.start('state1');
-
     </script>
 </body>
 </html>
