@@ -417,10 +417,10 @@ map.addTilesetImage('mario', 'mario');//1 合集图片名称 2加载图片名称
 layer = map.createLayer('world');//tiled 图层名
 layer.resizeWorld();//调整世界大小为地图大小
 
-map.setCollisionBetween(15,16); //设置碰撞的图范围 资源图索引
-map.setCollisionBetween(20,25);
-map.setCollisionBetween(27,29);
-map.setCollision(40);   //设置碰撞的图 资源图索引
+map.setCollisionBetween(15,16,true,'world'); //设置碰撞的图范围 资源图索引
+map.setCollisionBetween(20,25,true,'world');
+map.setCollisionBetween(27,29,true,'world');
+map.setCollision(40,true,'world');   //设置碰撞的图 资源图索引
 
 game.physics.startSystem(Phaser.Physics.ARCADE);//系统开启物理引擎
 player = game.add.sprite(32, 32, 'player');

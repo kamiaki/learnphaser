@@ -47,7 +47,8 @@
                 this.layer1 = map.createLayer('pengzhuang');//tiled 图层名
                 this.layer.resizeWorld();//调整世界大小为地图大小
 
-                map.setCollisionBetween(2,11);
+                map.setCollisionBetween(2,12,true,'pengzhuang');
+                map.setCollision(2,true,'pengzhuang');   //设置碰撞的图 资源图索引
 
             }
             ,this.initPlayer = function(){
