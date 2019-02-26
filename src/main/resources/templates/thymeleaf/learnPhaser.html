@@ -25,8 +25,10 @@
                 game.load.tilemap('jsonMap','res/map_json1.json',null,Phaser.Tilemap.TILED_JSON);
                 game.load.image('dituImage','res/ditu_map.png');
                 game.load.spritesheet("player","res/guaiwu_player.png",32,32);
+                game.load.audio('foo','res/作曲1.ogg');								//加载音频
             },
             this.create = function(){
+                this.musicInit();
                 game.physics.startSystem(Phaser.Physics.ARCADE);
                 this.initMap();
                 this.initPlayer();
@@ -40,6 +42,10 @@
 
             },
             this.render = function(){}
+            ,this.musicInit = function () {
+                var sound = game.add.audio('foo');
+                sound.play('',0, 1, true, true);
+            }
             ,this.initMap = function () {
                 var map = game.add.tilemap('jsonMap');
                 map.addTilesetImage('ditu_map', 'dituImage');//1 合集图片名称 2加载图片名称
