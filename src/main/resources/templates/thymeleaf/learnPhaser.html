@@ -25,7 +25,8 @@
                 game.load.tilemap('jsonMap','res/map_json1.json',null,Phaser.Tilemap.TILED_JSON);
                 game.load.image('dituImage','res/ditu_map.png');
                 game.load.spritesheet("player","res/guaiwu_player.png",32,32);
-                game.load.audio('foo','res/作曲1.ogg');								//加载音频
+                game.load.audio('foo','res/作曲1.ogg');								        //加载音频
+                game.load.atlas('atlasTest','res/Sprite-0001.png','res/Sprite-0001.json');
             },
             this.create = function(){
                 this.musicInit();
@@ -35,6 +36,9 @@
                 this.resetPlayer(100, 10);
                 this.initKeyboard();
 
+                var atlasTest = game.add.sprite(10,800,'atlasTest');					//添加精灵图
+                atlasTest.animations.add('animationTest',[0,1,2,3]);					  //添加动画
+                atlasTest.play('animationTest' , 30, true);						        //播放动画
             },
             this.update = function(){
                 game.physics.arcade.collide(this.player, this.layer1);//碰撞检测

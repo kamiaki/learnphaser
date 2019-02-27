@@ -510,6 +510,9 @@ man.animations.add('animation1',[0,1]);					//添加动画
 man.animations.add('animation1',['r1.png','r2.png']);	 //添加动画
 man.play('animation1' , 30, true);						//播放动画
 man.stop('animation1');									//停止动画
+
+//aseprite软件 file->export sprite sheet->json
+ game.load.atlas('atlasTest','res/Sprite-0001.png','res/Sprite-0001.json');//加载json
 ```
 
 ### 粒子动画
