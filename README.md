@@ -1,5 +1,9 @@
 # Phaser手册
 
+[TOC]
+
+
+
 ## 小技巧
 
 ```javascript
@@ -872,4 +876,3 @@ this.render = function(){
     game.debug.text('debugText', 10, 30);//屏幕上显示一些调试文字
 }
 ```
-      
