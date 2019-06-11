@@ -496,7 +496,7 @@ game.load.spritesheet('sprite', 'res/a1.png', 32, 32);		//加载精灵图
 var sprite = game.add.sprite(110,110,'sprite');				//添加精灵图
 sprite.animations.add('animation1',[0,1,2]);				//添加动画
 sprite.play('animation1',10,true);							//播放动画
-sprite.stop('animation1');									//停止动画
+sprite.animations.stop('animation1');						 //停止动画
 ```
 
 ### Atlas动画
@@ -509,7 +509,7 @@ var man = game.add.sprite(10,10,'man');					//添加精灵图
 man.animations.add('animation1',[0,1]);					//添加动画
 man.animations.add('animation1',['r1.png','r2.png']);	 //添加动画
 man.play('animation1' , 30, true);						//播放动画
-man.stop('animation1');									//停止动画
+man.animations.stop('animation1');						//停止动画
 
 //aseprite软件 file->export sprite sheet->json
  game.load.atlas('atlasTest','res/Sprite-0001.png','res/Sprite-0001.json');//加载json
@@ -627,6 +627,68 @@ else if (rightKey.isDown){
     sprite.x++;
 }
 
+//按下键动 抬起不动
+var state1 = function state() {
+        this.sprite;
+        this.upKey ;
+        this.downKey ;
+        this.leftKey ;
+        this.rightKey ;
+        this.upKey_Down = false;
+        this.downKey_Down = false;
+        this.leftKey_Down = false;
+        this.rightKey_Down = false;
+        this.speed = 2;
+        this.aSpeed = 10;
+
+        this.preload = function(){
+            game.load.spritesheet('sprite', './res/a1.png', 32, 32);	//加载精灵图
+        };
+        this.create = function(){
+            //创建精灵
+            this.sprite = game.add.sprite(10,10,'sprite',0);
+            this.sprite.animations.add('animation1',[0,1,2]);
+            this.sprite.animations.add('animation2',[3,4,5]);
+            this.sprite.animations.add('animation3',[6,7,8]);
+            this.sprite.animations.add('animation4',[9,10,11]);
+            //按键
+            this.upKey = game.input.keyboard.addKey(Phaser.Keyboard.W);
+            this.downKey = game.input.keyboard.addKey(Phaser.Keyboard.S);
+            this.leftKey = game.input.keyboard.addKey(Phaser.Keyboard.A);
+            this.rightKey = game.input.keyboard.addKey(Phaser.Keyboard.D);
+        };
+        this.update = function(){
+            if(this.upKey.isDown){
+                this.sprite.y-=this.speed;
+                this.sprite.play('animation4',this.aSpeed,true);
+                this.upKey_Down = true;
+            }else if (this.downKey.isDown){
+                this.sprite.y+=this.speed;
+                this.sprite.play('animation1',this.aSpeed,true);
+                this.downKey_Down = true;
+            }else if (this.leftKey.isDown){
+                this.sprite.x-=this.speed;
+                this.sprite.play('animation2',this.aSpeed,true);
+                this.leftKey_Down = true;
+            }else if (this.rightKey.isDown){
+                this.sprite.x+=this.speed;
+                this.sprite.play('animation3',this.aSpeed,true);
+                this.rightKey_Down = true;
+            }else if(this.upKey_Down && this.upKey.isUp){
+                this.upKey_Down = false;
+                this.sprite.animations.stop('animation4');
+            }else if(this.downKey_Down && this.downKey.isUp){
+                this.downKey_Down = false;
+                this.sprite.animations.stop('animation1');
+            }else if(this.leftKey_Down && this.leftKey.isUp){
+                this.leftKey_Down = false;
+                this.sprite.animations.stop('animation2');
+            }else if(this.rightKey_Down && this.rightKey.isUp){
+                this.rightKey_Down = false;
+                this.sprite.animations.stop('animation3');
+            }
+        };
+}
 ```
 
 ### 鼠标点击交互
